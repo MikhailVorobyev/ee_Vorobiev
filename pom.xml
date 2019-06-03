@@ -6,8 +6,32 @@
 
     <groupId>com.accenture</groupId>
     <artifactId>flowershop</artifactId>
-    <packaging>war</packaging>
     <version>0.0.1</version>
+    <packaging>war</packaging>
+
+    <dependencies>
+        <!--Web-->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>9.0.20</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.199</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 
 </project>
