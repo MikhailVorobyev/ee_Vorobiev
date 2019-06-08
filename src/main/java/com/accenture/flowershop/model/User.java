@@ -13,7 +13,10 @@ public class User {
     private int discount;
     private Role role;
 
-    public User(String firstName, String lastName, String address, String phoneNumber, double moneyBalance, int discount, Role role) {
+    public User(String login, String password, String firstName, String lastName, String address,
+                String phoneNumber, double moneyBalance, int discount, Role role) {
+        this.login = login;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -21,6 +24,12 @@ public class User {
         this.moneyBalance = moneyBalance;
         this.discount = discount;
         this.role = role;
+    }
+
+    public User(String login, double moneyBalance, int discount) {
+        this.login = login;
+        this.moneyBalance = moneyBalance;
+        this.discount = discount;
     }
 
     public String getFirstName() {
@@ -61,6 +70,30 @@ public class User {
 
     public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

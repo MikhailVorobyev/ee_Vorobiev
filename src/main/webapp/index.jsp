@@ -15,16 +15,18 @@
 <body>
 <br><br><br><br><br><br><br><br>
 <div align="center">
-    <form method="post" action="authorization">
+    <h3><a href="user?action=registration">Регистрация</a></h3>
+    <form method="post" action="user">
+        <input type="hidden" name="form" value="authorise">
         <dl>
             <dt>Login:</dt>
-            <dd><input type="text" name="name" size=30></dd>
+            <dd><input type="text" name="login" size=30></dd>
         </dl>
         <dl>
             <dt>Password:</dt>
-            <dd><input type="text" name="url" size=30></dd>
+            <dd><input type="text" name="password" size=30></dd>
         </dl>
-        <button type="submit" onclick="window.history.back()">Submit</button>
+        <button type="submit">Submit</button>
     </form>
 </div>
 </body>

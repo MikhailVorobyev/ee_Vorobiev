@@ -62,7 +62,21 @@ create table FLOWERSHOP.FLOWER
 (
     id int not null,
     name varchar(30) not null,
-    price decimal(8,2) not null,
+    price int not null,
     quantity int not null,
     constraint FLOWER_pk primary key (id)
+);
+
+create table FLOWERSHOP."ORDER"
+(
+    ID INTEGER not null,
+    USER_ID INTEGER not null,
+    CREATE_DATA DATE not null,
+    CLOSE_DATA DATE not null,
+    STATUS VARCHAR(6) not null,
+    constraint ORDER_PK
+        primary key (ID),
+    constraint ORDER_USER_LOGIN_FK
+        foreign key (USER_ID) references FLOWERSHOP.USER
+            on delete cascade
 );

@@ -37,6 +37,25 @@ h2, h3 {
 li {
     margin: 15px 0;
 }
+.section {
+    margin: 50px 70px;
+}
+.button {
+    background-color: #fcb303;
+    color: #ffffff;
+    padding: 1rem 3rem;
+    border-radius: 8px;
+    font-size: 20px;
+    text-transform: uppercase;
+    border: none;
+}
+p {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin: 10px 80px;
+}
 
 /*
 a[href^="skype:"] {

@@ -3,10 +3,10 @@ package com.accenture.flowershop.model;
 public class Flower {
     private Integer id;
     private String name;
-    private double price;
+    private int price;
     private int quantity;
 
-    public Flower(String name, double price, int quantity) {
+    public Flower(String name, int price, int quantity) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -20,11 +20,11 @@ public class Flower {
         this.name = name;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

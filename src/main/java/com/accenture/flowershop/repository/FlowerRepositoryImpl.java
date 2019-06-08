@@ -26,7 +26,7 @@ public class FlowerRepositoryImpl implements FlowerRepository {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 result.add(new Flower(rs.getString("name"),
-                        Double.parseDouble(rs.getString("price")),
+                        Integer.parseInt(rs.getString("price")),
                         Integer.parseInt(rs.getString("quantity"))));
             }
         } catch (SQLException e) {
