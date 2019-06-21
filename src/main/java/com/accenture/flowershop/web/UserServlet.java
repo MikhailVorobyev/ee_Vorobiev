@@ -1,29 +1,33 @@
 package com.accenture.flowershop.web;
 
+import com.accenture.flowershop.dao.*;
 import com.accenture.flowershop.model.Flower;
+import com.accenture.flowershop.model.Order;
 import com.accenture.flowershop.model.Role;
 import com.accenture.flowershop.model.User;
-import com.accenture.flowershop.repository.FlowerRepository;
-import com.accenture.flowershop.repository.FlowerRepositoryImpl;
-import com.accenture.flowershop.repository.UserRepository;
-import com.accenture.flowershop.repository.UserRepositoryImpl;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserServlet extends HttpServlet {
     private UserRepository userRepository;
     private FlowerRepository flowerRepository;
+    private OrderRepository orderRepository;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         userRepository = new UserRepositoryImpl();
         flowerRepository = new FlowerRepositoryImpl();
+        orderRepository = new OrderRepositoryImpl();
     }
 
     @Override
@@ -52,11 +56,26 @@ public class UserServlet extends HttpServlet {
         boolean checkExistUser = userRepository.checkToken(login, password);
         if ("authorise".equals(form)) {
             if (checkExistUser) {
+                HttpSession session = request.getSession();
+
+                /*User*/
                 User user = userRepository.get(login);
-                request.setAttribute("user", user);
+                session.setAttribute("user", user);
+
+                /*Flowers*/
                 List<Flower> list = flowerRepository.getAll();
-                request.setAttribute("flowers", list);
-                request.getRequestDispatcher("/WEB-INF/jsp/flowers.jsp").forward(request, response);
+                session.setAttribute("flowers", list);
+
+                /*Empty order list*/
+                Set<Order> orderList = new HashSet<>();
+                session.setAttribute("orders", orderList);
+                if ("admin123".equals(password)) {
+                    Set<Order> allOrders = orderRepository.getAll();
+                    session.setAttribute("allOrders", allOrders);
+                    request.getRequestDispatcher("/WEB-INF/jsp/adminPage.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("/WEB-INF/jsp/userPage.jsp").forward(request, response);
+                }
             } else {
                 request.getRequestDispatcher("/WEB-INF/jsp/registration.jsp").forward(request, response);
             }

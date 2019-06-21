@@ -5,12 +5,12 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>flowerServlet</servlet-name>
-        <servlet-class>com.accenture.flowershop.web.FlowerServlet</servlet-class>
+        <servlet-name>orderServlet</servlet-name>
+        <servlet-class>com.accenture.flowershop.web.OrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>flowerServlet</servlet-name>
-        <url-pattern>/flowers</url-pattern>
+        <servlet-name>orderServlet</servlet-name>
+        <url-pattern>/order</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -20,5 +20,14 @@
     <servlet-mapping>
         <servlet-name>userServlet</servlet-name>
         <url-pattern>/user</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>mainpageServlet</servlet-name>
+        <servlet-class>com.accenture.flowershop.web.MainPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mainpageServlet</servlet-name>
+        <url-pattern>/mainpage</url-pattern>
     </servlet-mapping>
 </web-app>
