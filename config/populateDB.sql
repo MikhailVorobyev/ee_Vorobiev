@@ -20,10 +20,10 @@ VALUES ('admin', 'ROLE_ADMIN'),
 
 
 INSERT INTO FLOWERSHOP.FLOWER (id, name, price, QUANTITY)
-VALUES (FLOWER_SEQ.NEXTVAL, 'Тюльпан',  100, 15),
-       (FLOWER_SEQ.NEXTVAL, 'Роза',     500, 100),
-       (FLOWER_SEQ.NEXTVAL, 'Лопух',    130, 70),
-       (FLOWER_SEQ.NEXTVAL, 'Борщевик', 210, 120),
-       (FLOWER_SEQ.NEXTVAL, 'Ромашка',  90,  30),
-       (FLOWER_SEQ.NEXTVAL, 'Георгин',  380, 42),
-       (FLOWER_SEQ.NEXTVAL, 'Гвоздика', 40,  214)
+VALUES (FLOWER_SEQ.NEXTVAL, 'Tulip',  100, 15),
+       (FLOWER_SEQ.NEXTVAL, 'Rose',     500, 100),
+       (FLOWER_SEQ.NEXTVAL, 'Burdock',    130, 70),
+       (FLOWER_SEQ.NEXTVAL, 'Hogweed', 210, 120),
+       (FLOWER_SEQ.NEXTVAL, 'Chamomile',  90,  30),
+       (FLOWER_SEQ.NEXTVAL, 'Dahlia',  380, 42),
+       (FLOWER_SEQ.NEXTVAL, 'Carnation', 40,  214)

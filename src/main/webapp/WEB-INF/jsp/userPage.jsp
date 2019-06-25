@@ -2,18 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="css/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
-    <link rel="stylesheet" type="text/css" href="css/vendor/animate/animate.css">
-    <link rel="stylesheet" type="text/css" href="css/vendor/css-hamburgers/hamburgers.min.css">
-    <link rel="stylesheet" type="text/css" href="css/vendor/animsition/css/animsition.min.css">
-    <link rel="stylesheet" type="text/css" href="css/vendor/select2/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="css/vendor/daterangepicker/daterangepicker.css">
-    <link rel="stylesheet" type="text/css" href="css/util.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" href="css/style.css">
+    <jsp:include page="headTag.jsp"/>
     <jsp:useBean id="user" type="com.accenture.flowershop.model.User" scope="session"/>
     <title>User Page</title>
 </head>
@@ -23,10 +12,10 @@
         <p>Привет: <u>${user.login}</u></p>
         <p>Баланс: <u>${user.moneyBalance}р.</u></p>
         <p>Скидка: <u>${user.discount}%</u></p>
-        <button class="btn button"><a href="index.jsp">Exit</a></button>
+        <button class="btn button"><a href="exit">Exit</a></button>
     </div>
-
 </div>
+
 <div class="row-mb-2">
     <div class="col-mb-6 display: dis-inline-block">
         <table id="flowers" class="table table-bordered">
@@ -112,6 +101,7 @@
 <script>
     let discount = 1 - (parseFloat(${user.discount}) / 100);
     let globalSum = 0;
+    let flowerData = "";
 
     function addToBucket(Name, Price, Amount, MaxAmount) {
         if (document.getElementById(Name) != null) {
@@ -137,11 +127,14 @@
             sum = document.createElement("td");
             sum.innerText = Amount * Price;
 
+            flowerData += Name + "-" + Amount + ";";
+
             globalSum += parseInt(sum.innerText);
             document.getElementById("sumValue").innerText = parseInt(globalSum * discount);
             tr.appendChild(sum);
             tr.id = Name;
             element.lastChild.insertBefore(tr, document.getElementById("sum"));
+
 
             if (document.getElementById("createOrder") !== null) {
                 return;
@@ -155,6 +148,7 @@
             tdOrder.lastChild.id = "createOrder";
             tdOrder.lastChild.value = "Создать заказ";
             tdOrder.lastChild.type = "button";
+            button.className = "btn btn-success btn-sm";
             button.setAttribute('onClick', "createOrder()");
             trOrder.appendChild(tdOrder);
             element.lastChild.appendChild(trOrder);
@@ -163,12 +157,11 @@
 
     function createOrder() {
         let totalSum = document.getElementById("sumValue").innerText;
-        /*to servlet*/
-        let formSum = document.getElementById("orderSum");
-        formSum.value = totalSum;
+        document.getElementById("flowerData").value = flowerData;
+        document.getElementById("orderSum").value = totalSum;
         document.getElementById("createForm").submit();
     }
-    
+
     function pay(MoneyBalance, OrderSum, OrderId) {
         if (MoneyBalance >= OrderSum) {
             document.getElementById("orderId").value = OrderId;
@@ -178,16 +171,15 @@
     }
 </script>
 
-    <%--Create Order Form--%>
-<form method="post" action="order" id="createForm">
-    <input type="hidden" name="typeForm" value="createForm">
-    <input type="hidden" name="createOrder" id="orderSum"/>
+<%--Create Order Form--%>
+<form method="post" action="createOrder" id="createForm">
+    <input type="hidden" name="flowerData" id="flowerData">
+    <input type="hidden" name="orderSum" id="orderSum"/>
     <input type="hidden" name="userLogin" value="${user.login}">
 </form>
 
-    <%--Pay Order Form--%>
-<form method="post" action="order" id="payForm">
-    <input type="hidden" name="typeForm" value="payForm">
+<%--Pay Order Form--%>
+<form method="post" action="payOrder" id="payForm">
     <input type="hidden" name="orderId" id="orderId"/>
     <input type="hidden" name="userLogin" value="${user.login}">
     <input type="hidden" name="newBalance" id="newBalance">

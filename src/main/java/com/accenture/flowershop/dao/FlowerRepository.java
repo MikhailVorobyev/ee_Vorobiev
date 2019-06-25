@@ -6,5 +6,9 @@ import java.util.List;
 
 public interface FlowerRepository {
 
+    Flower get(String name);
+
     List<Flower> getAll();
+
+    void update(Integer flowerId, Integer quantity);
 }

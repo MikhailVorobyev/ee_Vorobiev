@@ -96,6 +96,14 @@ public class User {
         this.address = address;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "User{" +

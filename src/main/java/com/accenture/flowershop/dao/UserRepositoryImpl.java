@@ -6,12 +6,14 @@ import com.accenture.flowershop.model.Role;
 import com.accenture.flowershop.model.User;
 import com.accenture.flowershop.util.Config;
 import com.accenture.flowershop.util.ConnectionFactory;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Repository
 public class UserRepositoryImpl implements UserRepository {
     private final ConnectionFactory connectionFactory;
 
@@ -36,27 +38,35 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     public void save(User user) {
+
         try (Connection conn = connectionFactory.getConnection()) {
-            PreparedStatement psUser = conn.prepareStatement("" +
-                    "INSERT INTO FLOWERSHOP.USER VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            PreparedStatement psRole = conn.prepareStatement("INSERT INTO FLOWERSHOP.ROLE VALUES ( ?, ? )");
-            psUser.setString(1, user.getLogin());
-            psUser.setString(2, user.getFirstName());
-            psUser.setString(3, user.getLastName());
-            psUser.setString(4, user.getPassword());
-            psUser.setString(5, user.getAddress());
-            psUser.setString(6, user.getPhoneNumber());
-            psUser.setInt(7, User.DEFAULT_USER_MONEY_BALANCE);
-            psUser.setInt(8, user.getDiscount());
+            try {
+                PreparedStatement psUser = conn.prepareStatement("" +
+                        "INSERT INTO FLOWERSHOP.USER VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement psRole = conn.prepareStatement("INSERT INTO FLOWERSHOP.ROLE VALUES ( ?, ? )");
+                conn.setAutoCommit(false);
+                psUser.setString(1, user.getLogin());
+                psUser.setString(2, user.getFirstName());
+                psUser.setString(3, user.getLastName());
+                psUser.setString(4, user.getPassword());
+                psUser.setString(5, user.getAddress());
+                psUser.setString(6, user.getPhoneNumber());
+                psUser.setInt(7, User.DEFAULT_USER_MONEY_BALANCE);
+                psUser.setInt(8, user.getDiscount());
 
-            psRole.setString(1, user.getLogin());
-            psRole.setString(2, Role.ROLE_USER.toString());
-            psUser.execute();
-            psRole.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+                psRole.setString(1, user.getLogin());
+                psRole.setString(2, Role.ROLE_USER.toString());
+
+                psUser.execute();
+                psRole.execute();
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+            }
+
+        } catch (SQLException exc) {
+            exc.printStackTrace();
         }
-
     }
 
     public boolean checkToken(String login, String password) {
@@ -78,11 +88,11 @@ public class UserRepositoryImpl implements UserRepository {
         try (Connection conn = connectionFactory.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("" +
                     "UPDATE FLOWERSHOP.USER SET MONEY_BALANCE = ? WHERE LOGIN = ?");
-            ps.setString(1, userLogin);
-            ps.setInt(2, newBalance);
+            ps.setInt(1, newBalance);
+            ps.setString(2, userLogin);
             ps.execute();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -41,6 +41,19 @@
     </build>
 
     <dependencies>
+        <!--Spring-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.1.4.RELEASE</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>5.1.4.RELEASE</version>
+        </dependency>-->
+
         <!--Web-->
         <dependency>
             <groupId>javax.servlet</groupId>

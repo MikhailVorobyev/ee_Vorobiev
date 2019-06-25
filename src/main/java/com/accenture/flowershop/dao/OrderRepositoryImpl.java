@@ -1,9 +1,11 @@
 package com.accenture.flowershop.dao;
 
+import com.accenture.flowershop.exception.NotExistStorageException;
 import com.accenture.flowershop.model.Order;
 import com.accenture.flowershop.model.Status;
 import com.accenture.flowershop.util.Config;
 import com.accenture.flowershop.util.ConnectionFactory;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +14,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+@Repository
 public class OrderRepositoryImpl implements OrderRepository {
 
     private final ConnectionFactory connectionFactory;
@@ -40,7 +43,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             ps.setString(5, Status.CREATED.toString());
             ps.execute();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return order;
     }
@@ -60,7 +63,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                         Status.valueOf(rs.getString("STATUS"))));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return resultList;
     }
@@ -75,7 +78,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             ps.setInt(3, orderId);
             ps.execute();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new NotExistStorageException("Order with order id " + orderId + "not exists", e);
         }
     }
 
@@ -92,8 +95,8 @@ public class OrderRepositoryImpl implements OrderRepository {
                         Status.valueOf(rs.getString("STATUS")));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new NotExistStorageException("Order with order id " + orderId + "not exists", e);
         }
-            return result;
-        }
+        return result;
+    }
 }

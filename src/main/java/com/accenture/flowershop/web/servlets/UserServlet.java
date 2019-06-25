@@ -1,4 +1,4 @@
-package com.accenture.flowershop.web;
+package com.accenture.flowershop.web.servlets;
 
 import com.accenture.flowershop.dao.*;
 import com.accenture.flowershop.model.Flower;
