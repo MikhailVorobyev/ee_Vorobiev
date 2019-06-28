@@ -12,7 +12,7 @@
         <p>Привет: <u>${user.login}</u></p>
         <p>Баланс: <u>${user.moneyBalance}р.</u></p>
         <p>Скидка: <u>${user.discount}%</u></p>
-        <button class="btn button"><a href="exit">Exit</a></button>
+        <a href="exit"><button class="btn button">Exit</button></a>
     </div>
 </div>
 

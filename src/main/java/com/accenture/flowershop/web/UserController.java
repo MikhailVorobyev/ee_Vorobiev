@@ -69,7 +69,7 @@ public class UserController {
             Set<Order> orderList = new HashSet<>();
             session.setAttribute("orders", orderList);
             if ("admin123".equals(password)) {
-                Set<Order> allOrders = orderRepository.getAll();
+                List<Order> allOrders = orderRepository.getAll();
                 session.setAttribute("allOrders", allOrders);
                 return "adminPage";
             } else {
@@ -92,7 +92,7 @@ public class UserController {
             return "incorrectToken";
         } else {
             userRepository.save(new User(login, password, name, surname, address, phone,
-                    User.DEFAULT_USER_MONEY_BALANCE, 0, Role.ROLE_USER));
+                    User.DEFAULT_USER_MONEY_BALANCE, 0, Role.ROLE_USER.toString()));
             return "redirect:/";
         }
     }
@@ -108,15 +108,16 @@ public class UserController {
             String flowerName = pair[0];
             int flowerCount = Integer.parseInt(pair[1]);
 
-            Flower flower = flowerRepository.get(flowerName);
-            int newQuantity = flower.getQuantity() - flowerCount;
-            updateFlower(flower.getId(), newQuantity);
+            Flower updatedFlower = flowerRepository.get(flowerName);
+            updatedFlower.setQuantity(updatedFlower.getQuantity() - flowerCount);
+
+            updateFlower(updatedFlower);
 
             session.removeAttribute("flowers");
             session.setAttribute("flowers", flowerRepository.getAll());
         }
 
-        Order order = new Order(userLogin, Integer.parseInt(orderSum),
+        Order order = new Order(new User(userLogin), Integer.parseInt(orderSum),
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE), null, Status.CREATED);
         Set<Order> orders = (Set<Order>) session.getAttribute("orders");
         orders.add(orderRepository.save(order));
@@ -124,8 +125,8 @@ public class UserController {
         return "redirect:/mainpage";
     }
 
-    private void updateFlower(Integer flowerId, Integer flowerQuantity) {
-        flowerRepository.update(flowerId, flowerQuantity);
+    private void updateFlower(Flower updatedFlower) {
+        flowerRepository.update(updatedFlower);
     }
 
     @RequestMapping(value = "/payOrder", method = RequestMethod.POST)
@@ -134,8 +135,11 @@ public class UserController {
                            @RequestParam(value = "userLogin") String userLogin,
                            @RequestParam(value = "newBalance") String newBalance) {
         Integer orId = Integer.parseInt(orderId);
-        orderRepository.update(orId, null);
+
         Order payedOrder = orderRepository.get(orId);
+        payedOrder.setStatus(Status.PAYED);
+        orderRepository.save(payedOrder);
+
         Set<Order> orders = (Set<Order>) session.getAttribute("orders");
         payedOrder.setPayed(true);
         orders.remove(payedOrder);
@@ -155,9 +159,12 @@ public class UserController {
                              @RequestParam(value = "orderId") String orderId) {
         Integer orId = Integer.parseInt(orderId);
         String closeDate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE);
-        orderRepository.update(orId, closeDate);
-        Set<Order> allOrders = (Set<Order>) session.getAttribute("allOrders");
-        Order closedOrder = orderRepository.get(orId);
+        Order newOrder = orderRepository.get(orId);
+        newOrder.setCloseDate(closeDate);
+        Order closedOrder = orderRepository.save(newOrder);
+
+        List<Order> allOrders = (List<Order>) session.getAttribute("allOrders");
+
         closedOrder.setClosed(true);
         allOrders.remove(closedOrder);
         allOrders.add(closedOrder);
@@ -167,9 +174,9 @@ public class UserController {
     @GetMapping("/mainpage")
     public String mainpage(HttpSession session) {
 
-        Role userLogin = ((User) session.getAttribute("user")).getRole();
-        if (Role.ROLE_ADMIN.equals(userLogin)) {
-            Set<Order> allOrders = orderRepository.getAll();
+        String userRole = ((User) session.getAttribute("user")).getRole();
+        if (Role.ROLE_ADMIN.toString().equals(userRole)) {
+            List<Order> allOrders = orderRepository.getAll();
             for (Order order : allOrders) {
                 if (order.getCloseDate() != null) {
                     order.setClosed(true);

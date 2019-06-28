@@ -41,18 +41,26 @@
     </build>
 
     <dependencies>
-        <!--Spring-->
+        <!--Spring MVC-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>5.1.4.RELEASE</version>
         </dependency>
 
-        <!--<dependency>
+        <!---Spring ORM-->
+        <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
+            <artifactId>spring-orm</artifactId>
             <version>5.1.4.RELEASE</version>
-        </dependency>-->
+        </dependency>
+
+        <!--hibernate JPA-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>5.4.1.Final</version>
+        </dependency>
 
         <!--Web-->
         <dependency>
@@ -124,6 +132,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>

@@ -2,15 +2,13 @@ package com.accenture.flowershop.dao;
 
 import com.accenture.flowershop.model.Order;
 
-import java.util.Set;
+import java.util.List;
 
 public interface OrderRepository {
 
     Order save(Order order);
 
-    Set<Order> getAll();
-
-    void update(Integer orderId, String closeDate);
+    List<Order> getAll();
 
     Order get(Integer orderId);
 }

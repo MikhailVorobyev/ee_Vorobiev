@@ -1,44 +1,54 @@
 package com.accenture.flowershop.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 import java.util.Objects;
+@NamedQueries({
+        @NamedQuery(name = Order.GET_ALL_SORTED, query = "" +
+                "SELECT o FROM Order o JOIN FETCH o.user ORDER BY o.createDate, o.status"),
 
+})
+@Entity
+@Table(name = "FLOWERSHOP.ORDERS")
 public class Order {
-    Integer id;
-    String userId;
-    String userName;
-    String userSurname;
-    String userAddress;
-    String userPhone;
-    int sum;
-    String createDate;
-    String closeDate;
-    Status status;
-    boolean payed;
-    boolean closed;
 
-    public Order(String userId, int sum, String createDate, String closeDate, Status status) {
-        this(null, userId, sum, createDate, closeDate, status);
+    public static final String GET_ALL_SORTED = "Order.getAll";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private int sum;
+    @Column(name = "create_date")
+    private String createDate;
+    @Column(name = "close_date")
+    private String closeDate;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
+
+    @Transient
+    private boolean payed;
+
+    @Transient
+    private boolean closed;
+
+    public Order() {
     }
 
-    public Order(Integer id, String userId, int sum, String createDate, String closeDate, Status status) {
-        this(id, userId, null, null, null, null, sum, createDate, closeDate, status);
-
-    }
-
-    public Order(Integer id, String userName, String userSurname, String userAddress,
-                 String userPhone, int sum, String createDate, String closeDate, Status status) {
-        this(id, null, userName, userSurname, userAddress, userPhone, sum, createDate, closeDate, status);
-
-    }
-
-    public Order(Integer id, String userId, String userName, String userSurname, String userAddress,
-                 String userPhone, int sum, String createDate, String closeDate, Status status) {
+    public Order(Integer id) {
         this.id = id;
-        this.userId = userId;
-        this.userName = userName;
-        this.userSurname = userSurname;
-        this.userAddress = userAddress;
-        this.userPhone = userPhone;
+    }
+
+    public Order(User user, int sum, String createDate, String closeDate, Status status) {
+        this.user = user;
         this.sum = sum;
         this.createDate = createDate;
         this.closeDate = closeDate;
@@ -51,46 +61,6 @@ public class Order {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserSurname() {
-        return userSurname;
-    }
-
-    public void setUserSurname(String userSurname) {
-        this.userSurname = userSurname;
-    }
-
-    public String getUserAddress() {
-        return userAddress;
-    }
-
-    public void setUserAddress(String userAddress) {
-        this.userAddress = userAddress;
-    }
-
-    public String getUserPhone() {
-        return userPhone;
-    }
-
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
     }
 
     public int getSum() {
@@ -123,6 +93,14 @@ public class Order {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public boolean isPayed() {

@@ -1,10 +1,26 @@
 package com.accenture.flowershop.model;
 
+import javax.persistence.*;
+
+@NamedQueries({
+        @NamedQuery(name = Flower.GET_ALL, query = "SELECT f FROM Flower f"),
+        @NamedQuery(name = Flower.GET, query = "SELECT f FROM Flower f WHERE f.name=:name"),
+})
+@Entity
+@Table(name = "FLOWERSHOP.FLOWER")
 public class Flower {
+    public static final String GET = "Flower.get";
+    public static final String GET_ALL = "Flower.getAll";
+
+    @Id
     private Integer id;
     private String name;
     private int price;
     private int quantity;
+
+    public Flower() {
+
+    }
 
     public Flower(Integer id, String name, int price, int quantity) {
         this.id = id;

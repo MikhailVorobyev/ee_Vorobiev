@@ -11,7 +11,7 @@
         <p>Привет: <u>${user.login}</u></p>
         <p>Баланс: <u>${user.moneyBalance}р.</u></p>
         <p>Скидка: <u>${user.discount}%</u></p>
-        <button class="btn button"><a href="exit">Exit</a></button>
+        <a href="exit"><button class="btn button">Exit</button></a>
     </div>
 </div>
 
@@ -35,10 +35,10 @@
             <c:forEach items="${allOrders}" var="order">
                 <jsp:useBean id="order" type="com.accenture.flowershop.model.Order"/>
                 <tr>
-                    <td>${order.userName}</td>
-                    <td>${order.userSurname}</td>
-                    <td>${order.userAddress}</td>
-                    <td>${order.userPhone}</td>
+                    <td>${order.user.firstName}</td>
+                    <td>${order.user.lastName}</td>
+                    <td>${order.user.address}</td>
+                    <td>${order.user.phoneNumber}</td>
                     <td>${order.sum}</td>
                     <td>${order.createDate}</td>
                     <td>${order.closeDate == null ? "" : order.closeDate}</td>

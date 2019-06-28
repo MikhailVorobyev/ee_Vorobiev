@@ -3,7 +3,6 @@
 -------------------------------------------------------
 
 DROP TABLE IF EXISTS FLOWERSHOP.USER;
-DROP TABLE IF EXISTS FLOWERSHOP.ROLE;
 DROP TABLE IF EXISTS FLOWERSHOP.FLOWER;
 DROP TABLE IF EXISTS FLOWERSHOP.ORDERS;
 
@@ -13,7 +12,7 @@ DROP TABLE IF EXISTS FLOWERSHOP.ORDERS;
 -------------------------------------------------------
 
 
-DROP sequence IF EXISTS FLOWERSHOP.ORDER_SEQ;
+
 DROP sequence IF EXISTS FLOWERSHOP.FLOWER_SEQ;
 
 
@@ -22,7 +21,7 @@ DROP sequence IF EXISTS FLOWERSHOP.FLOWER_SEQ;
 -------------------------------------------------------
 
 CREATE sequence FLOWERSHOP.FLOWER_SEQ;
-CREATE sequence FLOWERSHOP.ORDER_SEQ;
+
 
 --------------------------------------------------------
 --  DDL for Table USER
@@ -38,27 +37,12 @@ create table FLOWERSHOP.USER
     phone_number varchar(12) not null,
     money_balance decimal(10,2) not null,
     discount int not null,
+    role varchar(10),
     constraint user_pk primary key (login)
 );
 
 create unique index USER_login_password_index
     on FLOWERSHOP.USER (login, password);
-
---------------------------------------------------------
---  DDL for Table ROLE
---------------------------------------------------------
-
-create table FLOWERSHOP.ROLE
-(
-    user_login varchar not null,
-    role varchar(10) not null,
-    constraint role_user_login_fk
-        foreign key (user_login) references FLOWERSHOP.USER (login)
-            on delete cascade
-);
-
-create unique index ROLE_user_login_role_index
-    on FLOWERSHOP.ROLE (user_login, role);
 
 --------------------------------------------------------
 --  DDL for Table FLOWER
@@ -75,11 +59,11 @@ create table FLOWERSHOP.FLOWER
 
 create table FLOWERSHOP.ORDERS
 (
-    id integer not null,
+    id identity not null,
     user_id varchar not null,
     sum integer not null,
-    create_date date not null,
-    close_date date,
+    create_date varchar not null,
+    close_date varchar,
     status varchar(7) not null,
     constraint ORDER_PK
         primary key (id),

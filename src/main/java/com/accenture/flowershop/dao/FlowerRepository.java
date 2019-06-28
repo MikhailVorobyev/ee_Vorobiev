@@ -10,5 +10,5 @@ public interface FlowerRepository {
 
     List<Flower> getAll();
 
-    void update(Integer flowerId, Integer quantity);
+    void update(Flower flower);
 }
