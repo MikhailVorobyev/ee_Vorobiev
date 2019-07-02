@@ -1,13 +1,14 @@
-package com.accenture.flowershop.dao;
+package com.accenture.flowershop.service;
 
 import com.accenture.flowershop.model.User;
 
-public interface UserRepository {
+public interface UserService {
+
     User get(String login);
 
     void save(User user);
 
-    User checkToken(String login, String password);
+    boolean checkToken(String login, String password);
 
     void withdraw(String login, Integer newBalance);
 }

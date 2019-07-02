@@ -1,8 +1,8 @@
 package com.accenture.flowershop.dao.jpa;
 
 import com.accenture.flowershop.dao.UserRepository;
-import com.accenture.flowershop.model.Order;
 import com.accenture.flowershop.model.User;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +28,12 @@ public class JpaUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean checkToken(String login, String password) {
+    public User checkToken(String login, String password) {
         List<User> list =  em.createNamedQuery(User.CHECK_TOKEN, User.class)
                 .setParameter("login", login)
                 .setParameter("password", password)
                 .getResultList();
-        return list.size() == 1;
+        return DataAccessUtils.singleResult(list);
     }
 
     @Override

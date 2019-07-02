@@ -75,17 +75,19 @@
             <th>Кнопка оплаты</th>
         </tr>
         </thead>
-        <c:forEach items="${orders}" var="order">
-            <jsp:useBean id="order" type="com.accenture.flowershop.model.Order"/>
+        <c:forEach items="${orders}" var="orderEntry">
+            <jsp:useBean id="orderEntry"
+                         type="java.util.Map.Entry<java.lang.Integer, com.accenture.flowershop.model.Order>"/>
+
             <tr>
-                <td>${order.sum}</td>
-                <td>${order.createDate}</td>
-                <td>${order.closeDate == null ? "" : order.closeDate}</td>
-                <td>${order.status}</td>
+                <td>${orderEntry.value.sum}</td>
+                <td>${orderEntry.value.createDate}</td>
+                <td>${orderEntry.value.closeDate == null ? "" : orderEntry.value.closeDate}</td>
+                <td>${orderEntry.value.status}</td>
                 <c:choose>
-                    <c:when test="${!order.payed}">
+                    <c:when test="${!orderEntry.value.payed}">
                         <td><input class="btn btn-success btn-sm" type="button"
-                                   onclick="pay(${user.moneyBalance}, ${order.sum}, ${order.id})"
+                                   onclick="pay(${user.moneyBalance}, ${orderEntry.value.sum}, ${orderEntry.value.id})"
                                    value="Оплатить"></td>
                     </c:when>
                     <c:otherwise>

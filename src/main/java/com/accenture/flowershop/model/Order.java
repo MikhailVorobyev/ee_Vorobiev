@@ -8,13 +8,15 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(name = Order.GET_ALL_SORTED, query = "" +
                 "SELECT o FROM Order o JOIN FETCH o.user ORDER BY o.createDate, o.status"),
-
+        @NamedQuery(name = Order.GET_CREATED_ORDERS, query = "" +
+                "SELECT o FROM Order o WHERE o.user.login=:userLogin")
 })
 @Entity
 @Table(name = "FLOWERSHOP.ORDERS")
 public class Order {
 
     public static final String GET_ALL_SORTED = "Order.getAll";
+    public static final String GET_CREATED_ORDERS = "Order.getUserOrders";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -32,26 +32,27 @@
                 <th>Кнопка закрытия</th>
             </tr>
             </thead>
-            <c:forEach items="${allOrders}" var="order">
-                <jsp:useBean id="order" type="com.accenture.flowershop.model.Order"/>
+            <c:forEach items="${orders}" var="orderEntry">
+                <jsp:useBean id="orderEntry"
+                             type="java.util.Map.Entry<java.lang.Integer, com.accenture.flowershop.model.Order>"/>
                 <tr>
-                    <td>${order.user.firstName}</td>
-                    <td>${order.user.lastName}</td>
-                    <td>${order.user.address}</td>
-                    <td>${order.user.phoneNumber}</td>
-                    <td>${order.sum}</td>
-                    <td>${order.createDate}</td>
-                    <td>${order.closeDate == null ? "" : order.closeDate}</td>
-                    <td>${order.status}</td>
+                    <td>${orderEntry.value.user.firstName}</td>
+                    <td>${orderEntry.value.user.lastName}</td>
+                    <td>${orderEntry.value.user.address}</td>
+                    <td>${orderEntry.value.user.phoneNumber}</td>
+                    <td>${orderEntry.value.sum}</td>
+                    <td>${orderEntry.value.createDate}</td>
+                    <td>${orderEntry.value.closeDate == null ? "" : orderEntry.value.closeDate}</td>
+                    <td>${orderEntry.value.status}</td>
                     <c:choose>
-                        <c:when test="${order.closeDate != null || order.status == 'CREATED'}">
+                        <c:when test="${orderEntry.value.closeDate != null || orderEntry.value.status == 'CREATED'}">
                             <td><input class="btn btn-success btn-sm"
                                        type="button" value="Закрыть" disabled></td>
 
                         </c:when>
                         <c:otherwise>
                             <td><input class="btn btn-success btn-sm" type="button"
-                                       onclick="closeOrder(${order.id})" value="Закрыть"></td>
+                                       onclick="closeOrder(${orderEntry.value.id})" value="Закрыть"></td>
                         </c:otherwise>
                     </c:choose>
                 </tr>

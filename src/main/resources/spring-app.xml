@@ -11,7 +11,7 @@
 
     <context:annotation-config/>
     <tx:annotation-driven/>
-    <context:component-scan base-package="com.accenture.flowershop.dao.jpa"/>
+    <context:component-scan base-package="com.accenture.flowershop"/>
 
     <context:property-placeholder location="classpath:db/h2.properties" system-properties-mode="OVERRIDE"/>
 

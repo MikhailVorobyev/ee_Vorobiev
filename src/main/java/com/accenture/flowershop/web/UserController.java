@@ -4,6 +4,7 @@ import com.accenture.flowershop.dao.FlowerRepository;
 import com.accenture.flowershop.dao.OrderRepository;
 import com.accenture.flowershop.dao.UserRepository;
 import com.accenture.flowershop.model.*;
+import com.accenture.flowershop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -15,13 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Controller
 @Scope("session")
 public class UserController {
+
+    @Autowired
+    private UserService userService;
 
     private final UserRepository userRepository;
     private final FlowerRepository flowerRepository;
@@ -61,18 +64,25 @@ public class UserController {
             User user = userRepository.get(login);
             session.setAttribute("user", user);
 
-            /*Flowers*/
-            List<Flower> list = flowerRepository.getAll();
-            session.setAttribute("flowers", list);
-
-            /*Empty order list*/
-            Set<Order> orderList = new HashSet<>();
-            session.setAttribute("orders", orderList);
             if ("admin123".equals(password)) {
-                List<Order> allOrders = orderRepository.getAll();
-                session.setAttribute("allOrders", allOrders);
+                Map<Integer, Order> allOrders = orderRepository.getAll();
+                session.setAttribute("orders", allOrders);
                 return "adminPage";
             } else {
+                /*Flowers*/
+                List<Flower> list = flowerRepository.getAll();
+                session.setAttribute("flowers", list);
+
+                /*Empty order list*/
+                Map<Integer, Order> orderList = orderRepository.getUserOrders(login);
+                for (Map.Entry<Integer, Order> entry : orderList.entrySet()) {
+                    Order order = entry.getValue();
+                    if ("PAYED".equals(order.getStatus().toString())) {
+                        order.setPayed(true);
+                    }
+                }
+                session.setAttribute("orders", orderList);
+
                 return "userPage";
             }
 
@@ -119,8 +129,10 @@ public class UserController {
 
         Order order = new Order(new User(userLogin), Integer.parseInt(orderSum),
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE), null, Status.CREATED);
-        Set<Order> orders = (Set<Order>) session.getAttribute("orders");
-        orders.add(orderRepository.save(order));
+
+        Map<Integer, Order> orders = (Map<Integer, Order>) session.getAttribute("orders");
+        Order savedOrder = orderRepository.save(order);
+        orders.put(savedOrder.getId(), savedOrder);
 
         return "redirect:/mainpage";
     }
@@ -140,16 +152,14 @@ public class UserController {
         payedOrder.setStatus(Status.PAYED);
         orderRepository.save(payedOrder);
 
-        Set<Order> orders = (Set<Order>) session.getAttribute("orders");
+        Map<Integer, Order> orders = (Map<Integer, Order>) session.getAttribute("orders");
         payedOrder.setPayed(true);
-        orders.remove(payedOrder);
-        orders.add(payedOrder);
+        orders.put(orId, payedOrder);
 
         int nBalance = Integer.parseInt(newBalance);
         userRepository.withdraw(userLogin, nBalance);
         User user = (User) session.getAttribute("user");
         user.setMoneyBalance(nBalance);
-
 
         return "redirect:mainpage";
     }
@@ -159,15 +169,14 @@ public class UserController {
                              @RequestParam(value = "orderId") String orderId) {
         Integer orId = Integer.parseInt(orderId);
         String closeDate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE);
-        Order newOrder = orderRepository.get(orId);
-        newOrder.setCloseDate(closeDate);
-        Order closedOrder = orderRepository.save(newOrder);
+        Order orderToPay = orderRepository.get(orId);
+        orderToPay.setCloseDate(closeDate);
+        Order closedOrder = orderRepository.save(orderToPay);
 
-        List<Order> allOrders = (List<Order>) session.getAttribute("allOrders");
+        Map<Integer, Order> orders = (Map<Integer, Order>) session.getAttribute("orders");
 
         closedOrder.setClosed(true);
-        allOrders.remove(closedOrder);
-        allOrders.add(closedOrder);
+        orders.put(orId, closedOrder);
         return "redirect:mainpage";
     }
 
@@ -176,8 +185,9 @@ public class UserController {
 
         String userRole = ((User) session.getAttribute("user")).getRole();
         if (Role.ROLE_ADMIN.toString().equals(userRole)) {
-            List<Order> allOrders = orderRepository.getAll();
-            for (Order order : allOrders) {
+            Map<Integer, Order> allOrders = orderRepository.getAll();
+            for (Map.Entry<Integer, Order> entry : allOrders.entrySet()) {
+                Order order = entry.getValue();
                 if (order.getCloseDate() != null) {
                     order.setClosed(true);
                 }
@@ -190,6 +200,6 @@ public class UserController {
     }
 
     private boolean checkUser(String login, String password) {
-        return userRepository.checkToken(login, password);
+        return userService.checkToken(login, password);
     }
 }
