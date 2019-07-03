@@ -3,6 +3,7 @@
 <html>
 <head>
     <jsp:include page="headTag.jsp"/>
+    <jsp:useBean id="user" type="com.accenture.flowershop.to.UserTo" scope="session"/>
     <title>Admin Page</title>
 </head>
 <body>
@@ -32,9 +33,9 @@
                 <th>Кнопка закрытия</th>
             </tr>
             </thead>
-            <c:forEach items="${orders}" var="orderEntry">
+            <c:forEach items="${allOrders}" var="orderEntry">
                 <jsp:useBean id="orderEntry"
-                             type="java.util.Map.Entry<java.lang.Integer, com.accenture.flowershop.model.Order>"/>
+                             type="java.util.Map.Entry<java.lang.Integer, com.accenture.flowershop.to.OrderTo>"/>
                 <tr>
                     <td>${orderEntry.value.user.firstName}</td>
                     <td>${orderEntry.value.user.lastName}</td>
@@ -69,7 +70,7 @@
     }
 </script>
 
-<%--Close Order Form--%>
+<%--Close OrderTo Form--%>
 <form method="post" action="closeOrder" id="closeForm">
     <input type="hidden" name="orderId" id="orderId"/>
 </form>

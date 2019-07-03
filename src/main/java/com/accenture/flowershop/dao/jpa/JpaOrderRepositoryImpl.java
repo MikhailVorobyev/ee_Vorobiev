@@ -7,9 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class JpaOrderRepositoryImpl implements OrderRepository {
@@ -29,28 +27,26 @@ public class JpaOrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Map<Integer, Order> getAll() {
-        List<Order> list = em.createNamedQuery(Order.GET_ALL_SORTED, Order.class).getResultList();
-        return fillMap(list);
+    public List<Order> getAll() {
+        return em.createNamedQuery(Order.GET_ALL_SORTED, Order.class).getResultList();
     }
 
     @Override
-    public Map<Integer, Order> getUserOrders(String userLogin) {
-        List<Order> list = em.createNamedQuery(Order.GET_CREATED_ORDERS, Order.class)
+    public List<Order> getUserOrders(String userLogin) {
+        return em.createNamedQuery(Order.GET_CREATED_ORDERS, Order.class)
                 .setParameter("userLogin", userLogin).getResultList();
-        return fillMap(list);
     }
 
     @Override
-    public Order get(Integer orderId) {
+    public Order get(Long orderId) {
         return em.find(Order.class, orderId);
     }
 
-    private Map<Integer, Order> fillMap(List<Order> list) {
+    /*private Map<Integer, Order> fillMap(List<Order> list) {
         Map<Integer, Order> resultMap = new HashMap<>();
         for (Order order : list) {
             resultMap.put(order.getId(), order);
         }
         return resultMap;
-    }
+    }*/
 }

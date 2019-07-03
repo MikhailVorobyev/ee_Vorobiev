@@ -35,7 +35,7 @@ create table FLOWERSHOP.USER
     password varchar(20) not null,
     address varchar(50),
     phone_number varchar(12) not null,
-    money_balance decimal(10,2) not null,
+    money_balance decimal(8, 2) not null,
     discount int not null,
     role varchar(10),
     constraint user_pk primary key (login)
@@ -61,7 +61,7 @@ create table FLOWERSHOP.ORDERS
 (
     id identity not null,
     user_id varchar not null,
-    sum integer not null,
+    sum decimal(8, 2) not null,
     create_date varchar not null,
     close_date varchar,
     status varchar(7) not null,

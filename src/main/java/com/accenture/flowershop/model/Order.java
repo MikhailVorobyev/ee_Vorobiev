@@ -4,6 +4,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 @NamedQueries({
         @NamedQuery(name = Order.GET_ALL_SORTED, query = "" +
@@ -15,14 +16,14 @@ import java.util.Objects;
 @Table(name = "FLOWERSHOP.ORDERS")
 public class Order {
 
-    public static final String GET_ALL_SORTED = "Order.getAll";
-    public static final String GET_CREATED_ORDERS = "Order.getUserOrders";
+    public static final String GET_ALL_SORTED = "OrderTo.getAll";
+    public static final String GET_CREATED_ORDERS = "OrderTo.getUserOrders";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    private int sum;
+    private BigDecimal sum;
     @Column(name = "create_date")
     private String createDate;
     @Column(name = "close_date")
@@ -36,20 +37,14 @@ public class Order {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    @Transient
-    private boolean payed;
-
-    @Transient
-    private boolean closed;
-
     public Order() {
     }
 
-    public Order(Integer id) {
+    public Order(Long id) {
         this.id = id;
     }
 
-    public Order(User user, int sum, String createDate, String closeDate, Status status) {
+    public Order(User user, BigDecimal sum, String createDate, String closeDate, Status status) {
         this.user = user;
         this.sum = sum;
         this.createDate = createDate;
@@ -57,19 +52,19 @@ public class Order {
         this.status = status;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getSum() {
+    public BigDecimal getSum() {
         return sum;
     }
 
-    public void setSum(int sum) {
+    public void setSum(BigDecimal sum) {
         this.sum = sum;
     }
 
@@ -103,22 +98,6 @@ public class Order {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public boolean isPayed() {
-        return payed;
-    }
-
-    public void setPayed(boolean payed) {
-        this.payed = payed;
-    }
-
-    public boolean isClosed() {
-        return closed;
-    }
-
-    public void setClosed(boolean closed) {
-        this.closed = closed;
     }
 
     @Override

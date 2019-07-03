@@ -2,6 +2,8 @@ package com.accenture.flowershop.dao;
 
 import com.accenture.flowershop.model.User;
 
+import java.math.BigDecimal;
+
 public interface UserRepository {
     User get(String login);
 
@@ -9,5 +11,5 @@ public interface UserRepository {
 
     User checkToken(String login, String password);
 
-    void withdraw(String login, Integer newBalance);
+    void withdraw(String login, BigDecimal newBalance);
 }

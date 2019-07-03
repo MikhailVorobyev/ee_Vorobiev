@@ -13,7 +13,7 @@ public class Flower {
     public static final String GET_ALL = "Flower.getAll";
 
     @Id
-    private Integer id;
+    private Long id;
     private String name;
     private int price;
     private int quantity;
@@ -22,18 +22,18 @@ public class Flower {
 
     }
 
-    public Flower(Integer id, String name, int price, int quantity) {
+    public Flower(Long id, String name, int price, int quantity) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

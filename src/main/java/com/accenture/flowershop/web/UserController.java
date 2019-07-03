@@ -1,10 +1,16 @@
 package com.accenture.flowershop.web;
 
+import com.accenture.flowershop.AppUtil;
 import com.accenture.flowershop.dao.FlowerRepository;
 import com.accenture.flowershop.dao.OrderRepository;
 import com.accenture.flowershop.dao.UserRepository;
-import com.accenture.flowershop.model.*;
+import com.accenture.flowershop.model.Flower;
+import com.accenture.flowershop.model.Order;
+import com.accenture.flowershop.model.Status;
+import com.accenture.flowershop.model.User;
 import com.accenture.flowershop.service.UserService;
+import com.accenture.flowershop.to.OrderTo;
+import com.accenture.flowershop.to.UserTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,74 +44,10 @@ public class UserController {
         this.orderRepository = orderRepository;
     }
 
-    @GetMapping(value = "/")
-    public String index() {
-        return "index";
-    }
-
-    @GetMapping("/registration")
-    public String registration() {
-        return "registration";
-    }
-
     @RequestMapping(value = "/exit", method = RequestMethod.GET)
     public String exit(HttpSession session) {
         session.invalidate();
         return "redirect:/";
-    }
-
-    @RequestMapping(value = "/authorisation", method = RequestMethod.POST)
-    public String authorisation(HttpSession session,
-                                      @RequestParam(value = "login") String login,
-                                      @RequestParam(value = "password") String password) {
-
-        if (checkUser(login, password)) {
-
-            /*User*/
-            User user = userRepository.get(login);
-            session.setAttribute("user", user);
-
-            if ("admin123".equals(password)) {
-                Map<Integer, Order> allOrders = orderRepository.getAll();
-                session.setAttribute("orders", allOrders);
-                return "adminPage";
-            } else {
-                /*Flowers*/
-                List<Flower> list = flowerRepository.getAll();
-                session.setAttribute("flowers", list);
-
-                /*Empty order list*/
-                Map<Integer, Order> orderList = orderRepository.getUserOrders(login);
-                for (Map.Entry<Integer, Order> entry : orderList.entrySet()) {
-                    Order order = entry.getValue();
-                    if ("PAYED".equals(order.getStatus().toString())) {
-                        order.setPayed(true);
-                    }
-                }
-                session.setAttribute("orders", orderList);
-
-                return "userPage";
-            }
-
-        } else {
-            return "registration";
-        }
-    }
-
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String registration(@RequestParam(value = "login") String login,
-                               @RequestParam(value = "password") String password,
-                               @RequestParam(value = "name") String name,
-                               @RequestParam(value = "surname") String surname,
-                               @RequestParam(value = "address") String address,
-                               @RequestParam(value = "phone") String phone) {
-        if (checkUser(login, password)) {
-            return "incorrectToken";
-        } else {
-            userRepository.save(new User(login, password, name, surname, address, phone,
-                    User.DEFAULT_USER_MONEY_BALANCE, 0, Role.ROLE_USER.toString()));
-            return "redirect:/";
-        }
     }
 
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
@@ -112,6 +55,11 @@ public class UserController {
                               @RequestParam(value = "flowerData") String flowerData,
                               @RequestParam(value = "orderSum") String orderSum,
                               @RequestParam(value = "userLogin") String userLogin) {
+        BigDecimal userBalance = ((UserTo) session.getAttribute("user")).getMoneyBalance();
+        BigDecimal os = new BigDecimal(orderSum);
+        if (os.compareTo(userBalance) > 0) {
+            return "notEnoughMoney";
+        }
         String[] flowerNameAndCost = flowerData.split(";");
         for (String flowerPair : flowerNameAndCost) {
             String[] pair = flowerPair.split("-");
@@ -127,14 +75,14 @@ public class UserController {
             session.setAttribute("flowers", flowerRepository.getAll());
         }
 
-        Order order = new Order(new User(userLogin), Integer.parseInt(orderSum),
+        Order newOrder = new Order(new User(userLogin), new BigDecimal(orderSum),
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE), null, Status.CREATED);
 
-        Map<Integer, Order> orders = (Map<Integer, Order>) session.getAttribute("orders");
-        Order savedOrder = orderRepository.save(order);
-        orders.put(savedOrder.getId(), savedOrder);
+        Map<Long, OrderTo> orders = (Map<Long, OrderTo>) session.getAttribute("orders");
+        Order savedOrder = orderRepository.save(newOrder);
+        orders.put(savedOrder.getId(), AppUtil.createOrderTo(savedOrder));
 
-        return "redirect:/mainpage";
+        return "redirect:/userpage";
     }
 
     private void updateFlower(Flower updatedFlower) {
@@ -145,61 +93,52 @@ public class UserController {
     public String payOrder(HttpSession session,
                            @RequestParam(value = "orderId") String orderId,
                            @RequestParam(value = "userLogin") String userLogin,
-                           @RequestParam(value = "newBalance") String newBalance) {
-        Integer orId = Integer.parseInt(orderId);
+                           @RequestParam(value = "orderSumToPay") String orderSum) {
+        Long orId = Long.parseLong(orderId);
 
         Order payedOrder = orderRepository.get(orId);
         payedOrder.setStatus(Status.PAYED);
         orderRepository.save(payedOrder);
 
-        Map<Integer, Order> orders = (Map<Integer, Order>) session.getAttribute("orders");
-        payedOrder.setPayed(true);
-        orders.put(orId, payedOrder);
+        Map<Long, OrderTo> orders = (Map<Long, OrderTo>) session.getAttribute("orders");
+        orders.put(orId, AppUtil.createOrderTo(payedOrder));
 
-        int nBalance = Integer.parseInt(newBalance);
-        userRepository.withdraw(userLogin, nBalance);
-        User user = (User) session.getAttribute("user");
-        user.setMoneyBalance(nBalance);
+        UserTo user = (UserTo) session.getAttribute("user");
+        BigDecimal moneyBalance = user.getMoneyBalance();
+        BigDecimal newBalance = moneyBalance.subtract(new BigDecimal(orderSum));
+        userRepository.withdraw(userLogin, newBalance);
 
-        return "redirect:mainpage";
+        user.setMoneyBalance(newBalance);
+
+        return "redirect:userpage";
     }
 
     @RequestMapping(value = "closeOrder", method = RequestMethod.POST)
     public String closeOrder(HttpSession session,
                              @RequestParam(value = "orderId") String orderId) {
-        Integer orId = Integer.parseInt(orderId);
+        Long orId = Long.parseLong(orderId);
         String closeDate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE);
         Order orderToPay = orderRepository.get(orId);
         orderToPay.setCloseDate(closeDate);
-        Order closedOrder = orderRepository.save(orderToPay);
+        orderRepository.save(orderToPay);
 
-        Map<Integer, Order> orders = (Map<Integer, Order>) session.getAttribute("orders");
+        Map<Long, OrderTo> orderToMap = (Map<Long, OrderTo>) session.getAttribute("allOrders");
+        orderToMap.put(orId, AppUtil.createOrderTo(orderToPay));
 
-        closedOrder.setClosed(true);
-        orders.put(orId, closedOrder);
-        return "redirect:mainpage";
+        return "redirect:adminpage";
     }
 
-    @GetMapping("/mainpage")
-    public String mainpage(HttpSession session) {
-
-        String userRole = ((User) session.getAttribute("user")).getRole();
-        if (Role.ROLE_ADMIN.toString().equals(userRole)) {
-            Map<Integer, Order> allOrders = orderRepository.getAll();
-            for (Map.Entry<Integer, Order> entry : allOrders.entrySet()) {
-                Order order = entry.getValue();
-                if (order.getCloseDate() != null) {
-                    order.setClosed(true);
-                }
-            }
-            session.setAttribute("allOrders", allOrders);
-            return "adminPage";
-        } else {
-            return "userPage";
-        }
+    @GetMapping("/userpage")
+    public String userpage(HttpSession session) {
+        String userLogin = ((UserTo) session.getAttribute("user")).getLogin();
+        Map<Long, OrderTo> orderToMap = AppUtil.convertToOrderTo(orderRepository.getUserOrders(userLogin));
+        session.setAttribute("orders", orderToMap);
+        return "userPage";
     }
 
-    private boolean checkUser(String login, String password) {
-        return userService.checkToken(login, password);
+    @GetMapping("/adminpage")
+    public String adminpage(HttpSession session) {
+        ControllerUtil.fillOrderToList(session, orderRepository);
+        return "adminPage";
     }
 }

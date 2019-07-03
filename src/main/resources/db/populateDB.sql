@@ -2,8 +2,8 @@ DELETE FROM FLOWERSHOP.USER;
 DELETE FROM FLOWERSHOP.FLOWER;
 
 INSERT INTO FLOWERSHOP.USER (login, first_name, last_name, password, address, phone_number, money_balance, discount, role)
-VALUES ('admin', 'John', 'Smith', 'admin123', 'г.Тверь', '2345',  1000000, 15, 'ROLE_ADMIN'),
-       ('user1', 'userFirstName1', 'userLastName1', 'password1', 'г.Тверь', '2345', 2000, 10, 'ROLE_USER'),
+VALUES ('admin', 'John', 'Smith', 'admin123', 'г.Тверь', '2345',  100000, 15, 'ROLE_ADMIN'),
+       ('user1', 'userFirstName1', 'userLastName1', 'password1', 'г.Тверь', '2345', 2000, 7, 'ROLE_USER'),
        ('user2', 'userFirstName2', 'userLastName2', 'password2', 'г.Тверь', '2345', 2000, 5,  'ROLE_USER'),
        ('user3', 'userFirstName3', 'userLastName3', 'password3', 'г.Тверь', '2345', 2000, 20, 'ROLE_USER'),
        ('user4', 'userFirstName4', 'userLastName4', 'password4', 'г.Тверь', '2345', 2000, 5,  'ROLE_USER'),
@@ -11,7 +11,7 @@ VALUES ('admin', 'John', 'Smith', 'admin123', 'г.Тверь', '2345',  1000000,
 
 
 INSERT INTO FLOWERSHOP.FLOWER (id, name, price, QUANTITY)
-VALUES (FLOWERSHOP.FLOWER_SEQ.NEXTVAL, 'Tulip',     100, 15),
+VALUES (FLOWERSHOP.FLOWER_SEQ.NEXTVAL, 'Tulip',     111, 15),
        (FLOWERSHOP.FLOWER_SEQ.NEXTVAL, 'Rose',      500, 100),
        (FLOWERSHOP.FLOWER_SEQ.NEXTVAL, 'Burdock',   130, 70),
        (FLOWERSHOP.FLOWER_SEQ.NEXTVAL, 'Hogweed',   210, 120),

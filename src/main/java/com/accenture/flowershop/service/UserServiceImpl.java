@@ -5,6 +5,8 @@ import com.accenture.flowershop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -28,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void withdraw(String login, Integer newBalance) {
+    public void withdraw(String login, BigDecimal newBalance) {
         userRepository.withdraw(login, newBalance);
     }
 }

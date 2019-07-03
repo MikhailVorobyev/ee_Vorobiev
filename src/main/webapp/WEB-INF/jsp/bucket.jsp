@@ -15,7 +15,7 @@
             <th>Сумма</th>
         </tr>
         <c:forEach items="${orders}" var="order">
-            <jsp:useBean id="flower" type="com.accenture.flowershop.to.Order"/>
+            <jsp:useBean id="flower" type="com.accenture.flowershop.to.OrderTo"/>
             <tr>
                 <td>${flower.name}</td>
                 <td>${flower.price}</td>

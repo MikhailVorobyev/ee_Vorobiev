@@ -3,7 +3,7 @@
 <html>
 <head>
     <jsp:include page="headTag.jsp"/>
-    <jsp:useBean id="user" type="com.accenture.flowershop.model.User" scope="session"/>
+    <jsp:useBean id="user" type="com.accenture.flowershop.to.UserTo" scope="session"/>
     <title>User Page</title>
 </head>
 <body>
@@ -12,7 +12,9 @@
         <p>Привет: <u>${user.login}</u></p>
         <p>Баланс: <u>${user.moneyBalance}р.</u></p>
         <p>Скидка: <u>${user.discount}%</u></p>
-        <a href="exit"><button class="btn button">Exit</button></a>
+        <a href="exit">
+            <button class="btn button">Exit</button>
+        </a>
     </div>
 </div>
 
@@ -77,7 +79,7 @@
         </thead>
         <c:forEach items="${orders}" var="orderEntry">
             <jsp:useBean id="orderEntry"
-                         type="java.util.Map.Entry<java.lang.Integer, com.accenture.flowershop.model.Order>"/>
+                         type="java.util.Map.Entry<java.lang.Integer, com.accenture.flowershop.to.OrderTo>"/>
 
             <tr>
                 <td>${orderEntry.value.sum}</td>
@@ -87,7 +89,7 @@
                 <c:choose>
                     <c:when test="${!orderEntry.value.payed}">
                         <td><input class="btn btn-success btn-sm" type="button"
-                                   onclick="pay(${user.moneyBalance}, ${orderEntry.value.sum}, ${orderEntry.value.id})"
+                                   onclick="pay(${orderEntry.value.sum}, ${orderEntry.value.id})"
                                    value="Оплатить"></td>
                     </c:when>
                     <c:otherwise>
@@ -132,7 +134,9 @@
             flowerData += Name + "-" + Amount + ";";
 
             globalSum += parseInt(sum.innerText);
-            document.getElementById("sumValue").innerText = parseInt(globalSum * discount);
+
+            //TODO: change int to double
+            document.getElementById("sumValue").innerText = (parseFloat(globalSum * discount)).toFixed(2);
             tr.appendChild(sum);
             tr.id = Name;
             element.lastChild.insertBefore(tr, document.getElementById("sum"));
@@ -142,7 +146,7 @@
                 return;
             }
 
-            /*Order button*/
+            /*OrderTo button*/
             let trOrder = document.createElement("tr");
             let tdOrder = document.createElement("td");
             tdOrder.setAttribute('colspan', '4');
@@ -164,27 +168,26 @@
         document.getElementById("createForm").submit();
     }
 
-    function pay(MoneyBalance, OrderSum, OrderId) {
-        if (MoneyBalance >= OrderSum) {
-            document.getElementById("orderId").value = OrderId;
-            document.getElementById("newBalance").value = MoneyBalance - OrderSum;
-            document.getElementById("payForm").submit();
-        }
+    function pay(OrderSum, OrderId) {
+        document.getElementById("orderId").value = OrderId;
+        document.getElementById("orderSumToPay").value = OrderSum;
+        document.getElementById("payForm").submit();
     }
+
 </script>
 
-<%--Create Order Form--%>
+<%--Create OrderTo Form--%>
 <form method="post" action="createOrder" id="createForm">
     <input type="hidden" name="flowerData" id="flowerData">
     <input type="hidden" name="orderSum" id="orderSum"/>
     <input type="hidden" name="userLogin" value="${user.login}">
 </form>
 
-<%--Pay Order Form--%>
+<%--Pay OrderTo Form--%>
 <form method="post" action="payOrder" id="payForm">
     <input type="hidden" name="orderId" id="orderId"/>
     <input type="hidden" name="userLogin" value="${user.login}">
-    <input type="hidden" name="newBalance" id="newBalance">
+    <input type="hidden" name="orderSumToPay" id="orderSumToPay">
 </form>
 
 </body>

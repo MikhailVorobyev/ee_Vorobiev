@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -38,7 +39,7 @@ public class JpaUserRepositoryImpl implements UserRepository {
 
     @Override
     @Transactional
-    public void withdraw(String login, Integer newBalance) {
+    public void withdraw(String login, BigDecimal newBalance) {
         em.createNamedQuery(User.WITHDRAW)
                 .setParameter("login", login)
                 .setParameter("newBalance", newBalance)

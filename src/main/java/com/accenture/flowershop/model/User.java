@@ -1,6 +1,7 @@
 package com.accenture.flowershop.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @NamedQueries({
@@ -14,9 +15,8 @@ public class User {
 
     public static final String CHECK_TOKEN = "User.checkToken";
     public static final String WITHDRAW = "User.withdraw";
-    //public static final String GET_ALL_ORDERS_SORTED = "User.getAllOrdersSorted";
 
-    public static final int DEFAULT_USER_MONEY_BALANCE = 2000;
+    public static final BigDecimal DEFAULT_USER_MONEY_BALANCE = new BigDecimal(2000);
 
     @Id
     @Column(name = "login")
@@ -38,7 +38,7 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "money_balance")
-    private int moneyBalance;
+    private BigDecimal moneyBalance;
 
     @Column(name = "discount")
     private int discount;
@@ -53,11 +53,17 @@ public class User {
     }
 
     public User(String login) {
-        this.login = login;
+        this(login, null, null, null, null,
+                null, null, 0, null);
+    }
+
+    public User(String login, BigDecimal moneyBalance, int discount) {
+        this(login, null, null, null, null, null,
+                moneyBalance, discount, null);
     }
 
     public User(String login, String password, String firstName, String lastName, String address,
-                String phoneNumber, int moneyBalance, int discount, String role) {
+                String phoneNumber, BigDecimal moneyBalance, int discount, String role) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
@@ -67,12 +73,6 @@ public class User {
         this.moneyBalance = moneyBalance;
         this.discount = discount;
         this.role = role;
-    }
-
-    public User(String login, int moneyBalance, int discount) {
-        this.login = login;
-        this.moneyBalance = moneyBalance;
-        this.discount = discount;
     }
 
     public String getFirstName() {
@@ -99,11 +99,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getMoneyBalance() {
+    public BigDecimal getMoneyBalance() {
         return moneyBalance;
     }
 
-    public void setMoneyBalance(int moneyBalance) {
+    public void setMoneyBalance(BigDecimal moneyBalance) {
         this.moneyBalance = moneyBalance;
     }
 

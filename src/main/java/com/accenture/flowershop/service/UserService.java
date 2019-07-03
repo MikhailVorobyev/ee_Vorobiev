@@ -2,6 +2,8 @@ package com.accenture.flowershop.service;
 
 import com.accenture.flowershop.model.User;
 
+import java.math.BigDecimal;
+
 public interface UserService {
 
     User get(String login);
@@ -10,5 +12,5 @@ public interface UserService {
 
     boolean checkToken(String login, String password);
 
-    void withdraw(String login, Integer newBalance);
+    void withdraw(String login, BigDecimal newBalance);
 }
