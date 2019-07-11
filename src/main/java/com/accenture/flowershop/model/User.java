@@ -6,7 +6,7 @@ import java.util.Set;
 
 @NamedQueries({
         @NamedQuery(name = User.CHECK_TOKEN, query = "" +
-                "SELECT u FROM User u WHERE u.login=:login AND u.password=:password"),
+                "SELECT u FROM User u WHERE u.login=:login"),
         @NamedQuery(name = User.WITHDRAW, query = "UPDATE User u SET u.moneyBalance=:newBalance WHERE u.login=:login"),
 })
 @Entity
@@ -46,15 +46,14 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(mappedBy = "user")
     private Set<Order> orders;
 
     public User() {
     }
 
     public User(String login) {
-        this(login, null, null, null, null,
-                null, null, 0, null);
+        this.login = login;
     }
 
     public User(String login, BigDecimal moneyBalance, int discount) {

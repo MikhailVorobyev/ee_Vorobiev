@@ -1,4 +1,4 @@
-package com.accenture.flowershop.dao.jpa;
+package com.accenture.flowershop.dao;
 
 import com.accenture.flowershop.dao.OrderRepository;
 import com.accenture.flowershop.model.Order;

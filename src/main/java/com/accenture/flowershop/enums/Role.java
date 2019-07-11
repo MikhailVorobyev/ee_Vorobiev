@@ -1,4 +1,4 @@
-package com.accenture.flowershop.model;
+package com.accenture.flowershop.enums;
 
 public enum Role {
     ROLE_USER,

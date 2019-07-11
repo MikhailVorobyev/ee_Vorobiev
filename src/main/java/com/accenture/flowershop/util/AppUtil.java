@@ -1,7 +1,7 @@
-package com.accenture.flowershop;
+package com.accenture.flowershop.util;
 
 import com.accenture.flowershop.model.Order;
-import com.accenture.flowershop.model.Status;
+import com.accenture.flowershop.enums.Status;
 import com.accenture.flowershop.model.User;
 import com.accenture.flowershop.to.OrderTo;
 import com.accenture.flowershop.to.UserTo;
@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AppUtil {
+    private AppUtil() {
+    }
+
     public static Map<Long, OrderTo> convertToOrderTo(List<Order> orders) {
         return orders.stream()
                 .collect(Collectors.toMap(Order::getId, AppUtil::createOrderTo));

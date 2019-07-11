@@ -1,6 +1,6 @@
 package com.accenture.flowershop.to;
 
-import com.accenture.flowershop.model.Status;
+import com.accenture.flowershop.enums.Status;
 
 import java.math.BigDecimal;
 

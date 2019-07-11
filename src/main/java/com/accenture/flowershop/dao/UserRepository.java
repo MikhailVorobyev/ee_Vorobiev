@@ -9,7 +9,7 @@ public interface UserRepository {
 
     void save(User user);
 
-    User checkToken(String login, String password);
+    User checkToken(String login);
 
     void withdraw(String login, BigDecimal newBalance);
 }

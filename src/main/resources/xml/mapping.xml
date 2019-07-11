@@ -1,0 +1,30 @@
+<mapping>
+    <class name="com.accenture.flowershop.model.User">
+
+        <map-to xml="newUser" />
+
+        <field name="login" type="string">
+            <bind-xml name="login" node="element" />
+        </field>
+
+        <field name="password" type="string">
+            <bind-xml name="password" node="element" />
+        </field>
+
+        <field name="firstName" type="string">
+            <bind-xml name="firstName" node="element" />
+        </field>
+
+        <field name="lastName" type="string">
+            <bind-xml name="lastName" node="element" />
+        </field>
+
+        <field name="address" type="string">
+            <bind-xml name="address" node="element" />
+        </field>
+
+        <field name="phoneNumber" type="string">
+            <bind-xml name="phoneNumber" node="element" />
+        </field>
+    </class>
+</mapping>

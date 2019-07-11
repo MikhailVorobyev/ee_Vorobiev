@@ -1,14 +1,13 @@
-package com.accenture.flowershop.dao;
+package com.accenture.flowershop.service;
 
 import com.accenture.flowershop.model.Flower;
 
 import java.util.List;
 
-public interface FlowerRepository {
-
+public interface FlowerService {
     Flower get(String name);
 
     List<Flower> getAll();
 
-    Flower update(Flower flower);
+    void update(Flower flower);
 }

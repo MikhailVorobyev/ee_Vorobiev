@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+
+    <!-- Default set of monitored resources. If one of these changes, the    -->
+    <!-- web application will be reloaded.                                   -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+    <!--DATABASE-->
+    <Resource name="jdbc/flowerShopDS"
+              auth="Container"
+              type="javax.sql.DataSource"
+              driverClassName="org.postgresql.Driver"
+              url="jdbc:h2:mem:flowershop"
+              username="sa"
+              password=""
+              maxActive="10"
+              maxIdle="3"
+              initialSize="1"
+              removeAbandoned="true"
+              removeAbandonedTimeout="30"
+              testWhileIdle="true"
+              validationQuery="Select 1 From dual"
+              maxWait="-1"/>
+
+
+    <Resource name="jmc/connectionFactory"
+              auth="Container"
+              type="org.apache.activemq.ActiveMQConnectionFactory"
+              factory="org.apache.activemq.jndi.JNDIReferenceFactory"
+              brokerURL="tcp://localhost:61616"
+              brokerName="MyActiveMqBroker"/>
+
+    <Resource name="jms/outQueue"
+              auth="Container"
+              type="org.apache.activemq.command.ActiveMQQueue"
+              factory="org.apache.activemq.jndi.JNDIReferenceFactory"
+              physicalName="OUT_QUEUE"/>
+
+</Context>

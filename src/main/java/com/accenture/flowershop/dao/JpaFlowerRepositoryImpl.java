@@ -1,4 +1,4 @@
-package com.accenture.flowershop.dao.jpa;
+package com.accenture.flowershop.dao;
 
 import com.accenture.flowershop.dao.FlowerRepository;
 import com.accenture.flowershop.model.Flower;
@@ -31,7 +31,7 @@ public class JpaFlowerRepositoryImpl implements FlowerRepository {
 
     @Override
     @Transactional
-    public void update(Flower flower) {
-        em.merge(flower);
+    public Flower update(Flower flower) {
+        return em.merge(flower);
     }
 }

@@ -1,13 +1,15 @@
 package com.accenture.flowershop.web;
 
-import com.accenture.flowershop.AppUtil;
-import com.accenture.flowershop.dao.FlowerRepository;
-import com.accenture.flowershop.dao.OrderRepository;
+import com.accenture.flowershop.util.AppUtil;
+import com.accenture.flowershop.enums.SignInType;
 import com.accenture.flowershop.model.Flower;
 import com.accenture.flowershop.model.Order;
 import com.accenture.flowershop.model.User;
+import com.accenture.flowershop.service.FlowerService;
+import com.accenture.flowershop.service.OrderService;
 import com.accenture.flowershop.service.UserService;
 import com.accenture.flowershop.to.OrderTo;
+import com.accenture.flowershop.util.ControllerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -25,14 +27,14 @@ import java.util.Map;
 public class LoginController {
 
     private UserService userService;
-    private OrderRepository orderRepository;
-    private FlowerRepository flowerRepository;
+    private OrderService orderService;
+    private FlowerService flowerService;
 
     @Autowired
-    public LoginController(UserService userService, OrderRepository orderRepository, FlowerRepository flowerRepository) {
+    public LoginController(UserService userService, OrderService orderService, FlowerService flowerService) {
         this.userService = userService;
-        this.orderRepository = orderRepository;
-        this.flowerRepository = flowerRepository;
+        this.orderService = orderService;
+        this.flowerService = flowerService;
     }
 
     @GetMapping(value = "/")
@@ -45,30 +47,30 @@ public class LoginController {
                                 @RequestParam(value = "login") String login,
                                 @RequestParam(value = "password") String password) {
 
-        if (ControllerUtil.checkUser(userService, login, password)) {
+        if (!userService.checkToken(login, password, SignInType.AUTHENTICATION)) {
+            return "authenticationError";
 
+        } else {
             //User
             User user = userService.get(login);
             session.setAttribute("user", AppUtil.createUserTo(user));
 
             if ("admin".equals(login)) {
-                ControllerUtil.fillOrderToList(session, orderRepository);
+                ControllerUtil.fillOrderToList(session, orderService);
                 return "redirect:/adminpage";
 
             } else {
                 //Flowers
-                List<Flower> list = flowerRepository.getAll();
+                List<Flower> list = flowerService.getAll();
                 session.setAttribute("flowers", list);
 
                 //Orders
-                List<Order> orderList = orderRepository.getUserOrders(login);
+                List<Order> orderList = orderService.getUserOrders(login);
                 Map<Long, OrderTo> orderToList = AppUtil.convertToOrderTo(orderList);
                 session.setAttribute("orders", orderToList);
 
                 return "redirect:/userpage";
             }
-        } else {
-            return "authenticationError";
         }
     }
 }

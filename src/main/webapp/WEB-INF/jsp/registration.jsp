@@ -31,17 +31,17 @@
                 </div>
 
                 <div class="wrap-input100 validate-input m-b-16">
-                    <input class="input100" name="surname" placeholder="Фамилия">
+                    <input class="input100" name="surname" placeholder="Фамилия" required>
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input m-b-16">
-                    <input class="input100" name="address" placeholder="Адрес">
+                    <input class="input100" name="address" placeholder="Адрес" required>
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input m-b-16">
-                    <input class="input100" name="phone" placeholder="Телефон">
+                    <input class="input100" name="phone" placeholder="Телефон" required>
                     <span class="focus-input100"></span>
                 </div>
 
